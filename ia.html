@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resumidor de Estudos com IA | Kelven</title>
+  <title>Central de Inteligência Artificial | Kelven</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -21,6 +21,10 @@
       --primary-light: #eff6ff;
       --success: #10b981;
       --success-light: #ecfdf5;
+      --accent-purple: #8b5cf6;
+      --accent-purple-light: #f5f3ff;
+      --accent-amber: #f59e0b;
+      --accent-amber-light: #fffbeb;
       --danger: #ef4444;
       --danger-light: #fef2f2;
       --radius: 14px;
@@ -43,6 +47,10 @@
       --primary-light: rgba(59, 130, 246, 0.12);
       --success: #34d399;
       --success-light: rgba(52, 211, 153, 0.12);
+      --accent-purple: #a78bfa;
+      --accent-purple-light: rgba(167, 139, 250, 0.12);
+      --accent-amber: #fbbf24;
+      --accent-amber-light: rgba(251, 191, 36, 0.12);
       --danger: #f87171;
       --danger-light: rgba(239, 68, 68, 0.12);
       --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
@@ -86,7 +94,7 @@
       color: var(--text-muted);
       font-size: 14px;
       font-weight: 600;
-      padding: 8px 12px;
+      padding: 8px 14px;
       border-radius: var(--radius-sm);
       background: var(--surface);
       border: 1px solid var(--border);
@@ -126,18 +134,25 @@
       padding: 20px 20px 60px;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 22px;
     }
 
     /* Hero / Header */
     .hero {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
+    }
+
+    .hero-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
     .tool-badge {
-      align-self: flex-start;
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -147,21 +162,260 @@
       letter-spacing: 0.05em;
       color: var(--primary);
       background: var(--primary-light);
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 999px;
     }
 
     .hero-title {
-      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      font-size: clamp(1.8rem, 4vw, 2.3rem);
       font-weight: 800;
       letter-spacing: -0.03em;
       line-height: 1.2;
     }
 
     .hero-subtitle {
-      font-size: 15px;
+      font-size: 14.5px;
       color: var(--text-muted);
-      max-width: 600px;
+      max-width: 620px;
+    }
+
+    /* Mode Switcher Tabs */
+    .mode-selector-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 6px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    @media (max-width: 640px) {
+      .mode-selector-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mode-tab {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: calc(var(--radius) - 4px);
+      padding: 12px 14px;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: var(--transition);
+      color: var(--text-muted);
+    }
+
+    .mode-tab:hover {
+      background: var(--surface-subtle);
+      color: var(--text);
+    }
+
+    .mode-tab.active {
+      background: var(--surface-subtle);
+      border-color: var(--border);
+      color: var(--text);
+      box-shadow: var(--shadow);
+    }
+
+    .mode-tab-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mode-tab-title {
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .mode-tab-file {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      background: var(--border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .mode-tab-desc {
+      font-size: 12px;
+      line-height: 1.35;
+      color: var(--text-muted);
+    }
+
+    /* Model Selector Toolbar */
+    .model-toolbar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .model-info-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .model-select-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    select.model-select {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 12px;
+      outline: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    select.model-select:hover {
+      border-color: var(--border-hover);
+    }
+
+    /* Mode-Specific Settings (Playground / RAG) */
+    .settings-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .settings-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .settings-label {
+      font-size: 12.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    input.settings-input {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+      font-family: inherit;
+      font-size: 13.5px;
+      color: var(--text);
+      outline: none;
+      transition: var(--transition);
+    }
+
+    input.settings-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-light);
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .preset-chip {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .preset-chip:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slider-wrap input[type="range"] {
+      flex: 1;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .slider-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      min-width: 32px;
+      text-align: right;
+    }
+
+    /* RAG Document Drawer */
+    .rag-doc-box {
+      border: 1px dashed var(--border);
+      background: var(--surface-subtle);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 13px;
+    }
+
+    .rag-doc-header {
+      font-weight: 700;
+      font-size: 12.5px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .rag-doc-list {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-left: 18px;
+      color: var(--text-muted);
     }
 
     /* Examples Chips */
@@ -227,7 +481,7 @@
 
     textarea {
       width: 100%;
-      min-height: 170px;
+      min-height: 150px;
       background: transparent;
       border: none;
       outline: none;
@@ -303,7 +557,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 10px 20px;
+      padding: 10px 22px;
       font-size: 14px;
       font-weight: 600;
       border: none;
@@ -354,6 +608,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .result-title {
@@ -363,6 +619,16 @@
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    .result-meta-badge {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      padding: 3px 8px;
+      border-radius: 4px;
     }
 
     .btn-copy {
@@ -389,6 +655,37 @@
       font-size: 15.5px;
       line-height: 1.7;
       color: var(--text);
+      white-space: pre-wrap;
+    }
+
+    /* Sources / Trechos Consultados (RAG) */
+    .rag-sources {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .rag-sources-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rag-source-item {
+      font-size: 13px;
+      color: var(--text);
+      border-left: 2px solid var(--primary);
+      padding-left: 10px;
+      line-height: 1.45;
     }
 
     .keywords-section {
@@ -432,7 +729,7 @@
       font-weight: 700;
     }
 
-    /* Loading and Status boxes */
+    /* Status Boxes */
     .status-box {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -511,38 +808,151 @@
   <main>
     <!-- Header -->
     <header class="hero">
-      <div class="tool-badge">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-        </svg>
-        Mistral AI • Serverless
+      <div class="hero-top-row">
+        <div class="tool-badge" id="badge-ativo">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          <span id="badge-texto">Modo: Playground de IA</span>
+        </div>
       </div>
-      <h1 class="hero-title">Resumidor de Estudos</h1>
-      <p class="hero-subtitle">
-        Cole um texto acadêmico, artigo ou anotação para sintetizar as ideias principais e extrair termos-chave essenciais.
+      <h1 class="hero-title" id="titulo-pagina">Central de Inteligência Artificial</h1>
+      <p class="hero-subtitle" id="subtitulo-pagina">
+        Alterne dinamicamente entre as implementações de IA: teste o <strong>Playground livre</strong>, faça buscas semânticas com <strong>RAG</strong> ou use o <strong>Resumidor de Estudos</strong>.
       </p>
     </header>
 
-    <!-- Quick Example Prompts -->
-    <div class="examples-wrap">
-      <span class="examples-title">Exemplos rápidos para testar:</span>
-      <div class="chips-container">
-        <button type="button" class="example-chip" data-example="computacao">
-          ☁️ O que é Computação em Nuvem?
-        </button>
-        <button type="button" class="example-chip" data-example="ia">
-          🤖 Modelos de Linguagem (LLMs)
-        </button>
-        <button type="button" class="example-chip" data-example="conecta">
-          🎓 Projeto Conecta Jovem
-        </button>
+    <!-- 1. Seletor de Modo / Troca de IA (rag.py vs playground.py vs ia.js) -->
+    <div class="mode-selector-card">
+      <!-- Opção 1: Playground -->
+      <button type="button" class="mode-tab active" data-mode="playground">
+        <div class="mode-tab-header">
+          <span class="mode-tab-title">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+            </svg>
+            Playground IA
+          </span>
+          <span class="mode-tab-file">playground.py</span>
+        </div>
+        <span class="mode-tab-desc">Conversa livre, instrução de sistema e ajuste de temperatura.</span>
+      </button>
+
+      <!-- Opção 2: RAG -->
+      <button type="button" class="mode-tab" data-mode="rag">
+        <div class="mode-tab-header">
+          <span class="mode-tab-title">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+            RAG Conecta Jovem
+          </span>
+          <span class="mode-tab-file">rag.py</span>
+        </div>
+        <span class="mode-tab-desc">Busca semântica com fontes reais do edital e regras.</span>
+      </button>
+
+      <!-- Opção 3: Resumidor -->
+      <button type="button" class="mode-tab" data-mode="resumidor">
+        <div class="mode-tab-header">
+          <span class="mode-tab-title">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Resumidor
+          </span>
+          <span class="mode-tab-file">ia_json.py</span>
+        </div>
+        <span class="mode-tab-desc">Síntese concisa de estudos e extração de palavras-chave.</span>
+      </button>
+    </div>
+
+    <!-- 2. Toolbar de Seleção do Modelo de IA -->
+    <div class="model-toolbar">
+      <div class="model-info-label">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+        </svg>
+        <span>Modelo de IA selecionado:</span>
+      </div>
+      <div class="model-select-wrap">
+        <select id="select-modelo" class="model-select">
+          <option value="@cf/mistralai/mistral-small-3.1-24b-instruct" selected>Mistral Small 3.1 24B (Padrão)</option>
+          <option value="@cf/meta/llama-3.1-8b-instruct">Meta Llama 3.1 8B</option>
+          <option value="@cf/google/gemma-7b-it">Google Gemma 7B</option>
+          <option value="@cf/qwen/qwen1.5-7b-chat-awq">Qwen 1.5 7B</option>
+        </select>
       </div>
     </div>
 
-    <!-- Input Card -->
+    <!-- 3. Painel de Configurações Dinâmicas (Instrução / Temperatura / Documentos) -->
+    <!-- Configurações do Playground -->
+    <div id="painel-playground" class="settings-panel">
+      <div class="settings-row">
+        <label class="settings-label" for="input-sistema">
+          <span>Instrução de Sistema (Persona da IA)</span>
+          <span style="font-size:11px; font-weight:normal;">playground.py</span>
+        </label>
+        <input type="text" id="input-sistema" class="settings-input"
+               value="Você é um tutor paciente e experiente que explica tecnologia para jovens."
+               placeholder="Ex: Você é um professor especialista em computação em nuvem...">
+        
+        <div class="preset-chips">
+          <span style="font-size: 11.5px; color: var(--text-muted); align-self: center;">Personas rápidas:</span>
+          <button type="button" class="preset-chip" data-persona="Você é um tutor paciente que explica programação e tecnologia para jovens de forma simples e didática.">👨‍🏫 Tutor Didático</button>
+          <button type="button" class="preset-chip" data-persona="Você é um arquiteto sênior de Cloud e DevOps focado em boas práticas, infraestrutura moderna e Linux.">☁️ Especialista Cloud</button>
+          <button type="button" class="preset-chip" data-persona="Você é um assistente criativo, espirituoso e direto ao ponto.">💡 Criativo & Direto</button>
+        </div>
+      </div>
+
+      <div class="settings-row" style="margin-top: 4px;">
+        <div class="settings-label">
+          <span>Temperatura (Criatividade)</span>
+          <span id="label-temp" class="slider-value">0.7</span>
+        </div>
+        <div class="slider-wrap">
+          <span style="font-size:11.5px; color:var(--text-muted);">Preciso (0.0)</span>
+          <input type="range" id="input-temperatura" min="0" max="1" step="0.1" value="0.7">
+          <span style="font-size:11.5px; color:var(--text-muted);">Criativo (1.0)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informações da Base de Conhecimento do RAG -->
+    <div id="painel-rag" class="settings-panel" style="display: none;">
+      <div class="rag-doc-box">
+        <div class="rag-doc-header" id="toggle-docs">
+          <span style="display:flex; align-items:center; gap:6px;">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+            Base de Conhecimento Ativa (6 documentos do edital)
+          </span>
+          <span id="doc-toggle-icon" style="font-size:12px; color:var(--primary);">Ver documentos ▼</span>
+        </div>
+        <ul id="lista-documentos" class="rag-doc-list" style="display: none;">
+          <li>A bolsa auxílio do Conecta Jovem é de R$ 500,00 por mês durante o curso.</li>
+          <li>O aluno perde a bolsa se tiver 3 faltas sem justificativa, seguidas ou não.</li>
+          <li>As aulas são presenciais, das 7h30 às 11h30, no Yumit Hub e na UFMT.</li>
+          <li>Há vale-transporte (se necessário), auxílio alimentação e material gratuito.</li>
+          <li>O programa atende jovens de 15 a 24 anos que moram na Baixada Cuiabana.</li>
+          <li>No Projeto Integrador, cada aluno apresenta um MVP hospedado na nuvem.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Exemplos Rápidos Contextuais -->
+    <div class="examples-wrap">
+      <span class="examples-title" id="titulo-exemplos">Exemplos para testar:</span>
+      <div class="chips-container" id="container-exemplos">
+        <!-- Preenchido via JavaScript de acordo com o modo -->
+      </div>
+    </div>
+
+    <!-- Caixa de Entrada de Texto -->
     <div class="input-card">
-      <textarea id="texto" rows="8" maxlength="2000"
-                placeholder="Cole aqui seu texto de estudo (até 2.000 caracteres)..."></textarea>
+      <textarea id="texto" rows="7" maxlength="2000"
+                placeholder="Digite sua mensagem para o Playground..."></textarea>
       
       <div class="card-footer">
         <div class="counter-wrap">
@@ -556,28 +966,30 @@
             <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
             </svg>
-            Resumir com IA
+            <span id="botao-texto">Enviar ao Playground</span>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Results Area -->
+    <!-- Área de Resultados -->
     <div id="resultado"></div>
 
-    <!-- Privacy Disclaimer -->
+    <!-- Aviso de Privacidade e Segurança -->
     <p class="aviso">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
       </svg>
       <span>
-        Respostas geradas por inteligência artificial podem conter imprecisões. Por segurança, não envie dados pessoais ou confidenciais.
+        Respostas geradas por modelos de inteligência artificial na nuvem Cloudflare AI. Não compartilhe senhas ou dados sensíveis.
       </span>
     </p>
   </main>
 
   <script>
-    // Theme toggle
+    // -------------------------------------------------------------------
+    // 1. TEMA CLARO / ESCURO
+    // -------------------------------------------------------------------
     const themeBtn = document.getElementById('theme-btn');
     const sunIcon = document.getElementById('theme-icon-sun');
     const moonIcon = document.getElementById('theme-icon-moon');
@@ -605,71 +1017,212 @@
       applyTheme(newTheme);
     });
 
-    // Character counter & clear button
+    // -------------------------------------------------------------------
+    // 2. CONFIGURAÇÃO DOS MODOS DE IA (playground.py vs rag.py vs ia_json.py)
+    // -------------------------------------------------------------------
+    let modoAtual = 'playground';
+
+    const CONFIG_MODOS = {
+      playground: {
+        badge: 'Modo: Playground IA (playground.py)',
+        botao: 'Enviar ao Playground',
+        placeholder: 'Digite sua pergunta ou assunto para interagir com a IA livremente...',
+        exemplos: [
+          'Explique de forma simples o que é Computação em Nuvem.',
+          'Quais são os passos para criar um jogo 2D no Game Studio?',
+          'Como funciona uma Edge Function comparada a um servidor comum?'
+        ]
+      },
+      rag: {
+        badge: 'Modo: RAG Conecta Jovem (rag.py)',
+        botao: 'Consultar com RAG',
+        placeholder: 'Pergunte algo sobre o Conecta Jovem (ex: valor da bolsa, faltas, horários das aulas)...',
+        exemplos: [
+          'Qual é o valor da bolsa auxílio mensal do curso?',
+          'Onde e em que horários acontecem as aulas presenciais?',
+          'Quantas faltas sem justificativa causam a perda da bolsa?'
+        ]
+      },
+      resumidor: {
+        badge: 'Modo: Resumidor de Estudos (ia_json.py)',
+        botao: 'Resumir com IA',
+        placeholder: 'Cole aqui um texto acadêmico ou anotação (até 2.000 caracteres) para resumir...',
+        exemplos: [
+          'Computação em nuvem é a entrega de serviços de computação — servidores, armazenamento, bancos de dados, redes e software — pela Internet, proporcionando agilidade, escalabilidade e redução de custos operacionais.',
+          'Modelos de Linguagem de Grande Escala (LLMs) são redes neurais baseadas na arquitetura Transformer que analisam padrões semânticos para gerar texto coerente e resolver tarefas complexas.',
+          'O Projeto Conecta Jovem forma jovens em Cuiabá nas áreas de tecnologia e inovação, capacitando-os no desenvolvimento de projetos integradores na nuvem.'
+        ]
+      }
+    };
+
+    const modeTabs = document.querySelectorAll('.mode-tab');
+    const badgeTexto = document.getElementById('badge-texto');
+    const botaoTexto = document.getElementById('botao-texto');
     const textarea = document.getElementById('texto');
+    const containerExemplos = document.getElementById('container-exemplos');
+    const painelPlayground = document.getElementById('painel-playground');
+    const painelRag = document.getElementById('painel-rag');
+
+    function carregarExemplos(exemplos) {
+      containerExemplos.replaceChildren();
+      exemplos.forEach((ex) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'example-chip';
+        btn.textContent = `💡 ${ex.length > 55 ? ex.substring(0, 52) + '...' : ex}`;
+        btn.title = ex;
+        btn.addEventListener('click', () => {
+          textarea.value = ex;
+          updateCounter();
+          textarea.focus();
+        });
+        containerExemplos.appendChild(btn);
+      });
+    }
+
+    function setModo(modo) {
+      modoAtual = modo;
+      modeTabs.forEach(tab => {
+        if (tab.getAttribute('data-mode') === modo) {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+
+      const config = CONFIG_MODOS[modo];
+      badgeTexto.textContent = config.badge;
+      botaoTexto.textContent = config.botao;
+      textarea.placeholder = config.placeholder;
+      carregarExemplos(config.exemplos);
+
+      if (modo === 'playground') {
+        painelPlayground.style.display = 'flex';
+        painelRag.style.display = 'none';
+      } else if (modo === 'rag') {
+        painelPlayground.style.display = 'none';
+        painelRag.style.display = 'flex';
+      } else {
+        painelPlayground.style.display = 'none';
+        painelRag.style.display = 'none';
+      }
+
+      resultado.replaceChildren();
+    }
+
+    modeTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const modo = tab.getAttribute('data-mode');
+        setModo(modo);
+      });
+    });
+
+    // Toggle da gaveta de documentos RAG
+    const toggleDocs = document.getElementById('toggle-docs');
+    const listaDocumentos = document.getElementById('lista-documentos');
+    const docToggleIcon = document.getElementById('doc-toggle-icon');
+    if (toggleDocs) {
+      toggleDocs.addEventListener('click', () => {
+        const oculto = listaDocumentos.style.display === 'none';
+        listaDocumentos.style.display = oculto ? 'flex' : 'none';
+        docToggleIcon.textContent = oculto ? 'Ocultar documentos ▲' : 'Ver documentos ▼';
+      });
+    }
+
+    // Presets de Persona do Playground
+    const inputSistema = document.getElementById('input-sistema');
+    document.querySelectorAll('.preset-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        inputSistema.value = chip.getAttribute('data-persona');
+      });
+    });
+
+    // Slider de temperatura
+    const inputTemperatura = document.getElementById('input-temperatura');
+    const labelTemp = document.getElementById('label-temp');
+    inputTemperatura.addEventListener('input', () => {
+      labelTemp.textContent = Number(inputTemperatura.value).toFixed(1);
+    });
+
+    // Contador de caracteres e limpar
     const contador = document.getElementById('contador');
     const btnLimpar = document.getElementById('btn-limpar');
     const botao = document.getElementById('botao');
     const resultado = document.getElementById('resultado');
+    const selectModelo = document.getElementById('select-modelo');
 
     function updateCounter() {
       const length = textarea.value.length;
       contador.textContent = `${length.toLocaleString('pt-BR')} / 2.000`;
       btnLimpar.style.display = length > 0 ? 'inline' : 'none';
-      if (length > 1800) {
-        contador.style.color = 'var(--danger)';
-      } else {
-        contador.style.color = 'var(--text-muted)';
-      }
+      contador.style.color = length > 1800 ? 'var(--danger)' : 'var(--text-muted)';
     }
 
     textarea.addEventListener('input', updateCounter);
-
     btnLimpar.addEventListener('click', () => {
       textarea.value = '';
       updateCounter();
       textarea.focus();
     });
 
-    // Example snippets
-    const EXEMPLOS = {
-      computacao: 'Computação em nuvem é a entrega de serviços de computação — incluindo servidores, armazenamento, bancos de dados, redes, software e análise — pela Internet, a fim de oferecer inovações mais rápidas, recursos flexíveis e economia de escala. Em vez de comprar e manter servidores físicos, as empresas contratam infraestrutura sob demanda de provedores como AWS, Google Cloud e Cloudflare.',
-      ia: 'Modelos de Linguagem de Grande Escala (LLMs) são redes neurais profundas treinadas em vastos volumes de texto para compreender e gerar linguagem natural. Eles utilizam mecanismos de atenção (Transformers) para ponderar o contexto de palavras em sequências longas, permitindo tarefas de tradução, síntese de documentos, geração de código e diálogo intuitivo com humanos.',
-      conecta: 'O Conecta Jovem é uma iniciativa educacional que capacita estudantes em tecnologia, programação e computação em nuvem em Cuiabá. O projeto visa democratizar o acesso às profissões do futuro, promovendo o desenvolvimento de competências digitais, desenvolvimento web e habilidades práticas com inteligência artificial para o mercado de trabalho.'
-    };
-
-    document.querySelectorAll('.example-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        const key = chip.getAttribute('data-example');
-        if (EXEMPLOS[key]) {
-          textarea.value = EXEMPLOS[key];
-          updateCounter();
-          textarea.focus();
-        }
-      });
-    });
-
-    // Render summary result
+    // -------------------------------------------------------------------
+    // 3. EXIBIÇÃO DE RESULTADOS
+    // -------------------------------------------------------------------
     function mostrar(dados) {
       resultado.replaceChildren();
 
       const card = document.createElement('div');
       card.className = 'result-card';
 
-      // Header with copy button
+      // Cabeçalho
       const header = document.createElement('div');
       header.className = 'result-header';
 
+      const titleGroup = document.createElement('div');
+      titleGroup.style.display = 'flex';
+      titleGroup.style.alignItems = 'center';
+      titleGroup.style.gap = '8px';
+
       const title = document.createElement('span');
       title.className = 'result-title';
-      title.innerHTML = `
-        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-        Resumo Gerado
-      `;
-      header.appendChild(title);
 
+      if (modoAtual === 'rag') {
+        title.innerHTML = `
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+          Resposta RAG (Base de Conhecimento)
+        `;
+      } else if (modoAtual === 'playground') {
+        title.innerHTML = `
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+          </svg>
+          Resposta do Playground
+        `;
+      } else {
+        title.innerHTML = `
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          Resumo Gerado
+        `;
+      }
+
+      titleGroup.appendChild(title);
+
+      if (dados.modeloUsado) {
+        const metaBadge = document.createElement('span');
+        metaBadge.className = 'result-meta-badge';
+        const nomeCurto = dados.modeloUsado.split('/').pop().replace('-instruct', '');
+        metaBadge.textContent = nomeCurto;
+        titleGroup.appendChild(metaBadge);
+      }
+
+      header.appendChild(titleGroup);
+
+      // Botão Copiar
+      const textoCopiar = dados.resposta || dados.resumo || '';
       const btnCopy = document.createElement('button');
       btnCopy.type = 'button';
       btnCopy.className = 'btn-copy';
@@ -682,7 +1235,7 @@
       `;
       btnCopy.addEventListener('click', async () => {
         try {
-          await navigator.clipboard.writeText(dados.resumo);
+          await navigator.clipboard.writeText(textoCopiar);
           btnCopy.innerHTML = `
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <polyline points="20 6 9 17 4 12"/>
@@ -698,20 +1251,44 @@
               Copiar
             `;
           }, 2000);
-        } catch {
-          // fallback
-        }
+        } catch {}
       });
       header.appendChild(btnCopy);
       card.appendChild(header);
 
-      // Resumo text
-      const resumo = document.createElement('p');
-      resumo.className = 'summary-text';
-      resumo.textContent = dados.resumo;
-      card.appendChild(resumo);
+      // Texto Principal da Resposta
+      const textoPrincipal = document.createElement('div');
+      textoPrincipal.className = 'summary-text';
+      textoPrincipal.textContent = textoCopiar;
+      card.appendChild(textoPrincipal);
 
-      // Palavras-chave
+      // Trechos consultados se for RAG (rag.py)
+      if (modoAtual === 'rag' && dados.trechos && dados.trechos.length > 0) {
+        const fontesWrap = document.createElement('div');
+        fontesWrap.className = 'rag-sources';
+
+        const fontesTitle = document.createElement('span');
+        fontesTitle.className = 'rag-sources-title';
+        fontesTitle.innerHTML = `
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          Trechos consultados na base de conhecimento (fontes encontradas):
+        `;
+        fontesWrap.appendChild(fontesTitle);
+
+        dados.trechos.forEach(trecho => {
+          const item = document.createElement('div');
+          item.className = 'rag-source-item';
+          item.textContent = `"${trecho}"`;
+          fontesWrap.appendChild(item);
+        });
+
+        card.appendChild(fontesWrap);
+      }
+
+      // Palavras-chave se for Resumidor (ia_json.py)
       if (dados.palavras_chave && dados.palavras_chave.length > 0) {
         const keywordsSection = document.createElement('div');
         keywordsSection.className = 'keywords-section';
@@ -755,17 +1332,25 @@
       resultado.replaceChildren();
       const loadBox = document.createElement('div');
       loadBox.className = 'status-box';
+      const msg = modoAtual === 'rag'
+        ? 'Buscando similaridade de vetores e consultando a base com RAG...'
+        : (modoAtual === 'playground'
+          ? 'O modelo de IA está gerando a resposta no Playground...'
+          : 'A IA está analisando e sintetizando o texto...');
       loadBox.innerHTML = `
         <div class="spinner"></div>
-        <span>A IA está analisando e sintetizando o texto...</span>
+        <span>${msg}</span>
       `;
       resultado.appendChild(loadBox);
     }
 
-    async function executarResumo() {
+    // -------------------------------------------------------------------
+    // 4. DISPARO DA REQUISIÇÃO PARA /api/ia
+    // -------------------------------------------------------------------
+    async function executarIA() {
       const texto = textarea.value.trim();
       if (!texto) {
-        mostrarErro('Por favor, digite ou selecione um texto antes de resumir.');
+        mostrarErro('Por favor, digite ou selecione um texto antes de enviar.');
         textarea.focus();
         return;
       }
@@ -778,17 +1363,25 @@
       `;
       mostrarCarregando();
 
+      const payload = {
+        modo: modoAtual,
+        modelo: selectModelo.value,
+        texto: texto,
+        sistema: inputSistema.value.trim(),
+        temperatura: parseFloat(inputTemperatura.value) || 0.7
+      };
+
       try {
         const resposta = await fetch('/api/ia', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ texto: texto }),
+          body: JSON.stringify(payload),
         });
         const dados = await resposta.json();
         if (resposta.ok) {
           mostrar(dados);
         } else {
-          mostrarErro(dados.erro || 'Não foi possível gerar o resumo. Tente novamente.');
+          mostrarErro(dados.erro || 'Não foi possível processar a requisição. Tente novamente.');
         }
       } catch (erro) {
         mostrarErro('Sem conexão com o servidor da nuvem. Verifique sua rede e tente novamente.');
@@ -798,16 +1391,17 @@
       }
     }
 
-    botao.addEventListener('click', executarResumo);
+    botao.addEventListener('click', executarIA);
 
-    // Shortcut: Ctrl + Enter / Cmd + Enter
     textarea.addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
-        executarResumo();
+        executarIA();
       }
     });
 
+    // Inicia no modo Playground padrão
+    setModo('playground');
     updateCounter();
   </script>
 </body>
