@@ -3,55 +3,781 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resumidor de estudos com IA</title>
+  <title>Resumidor de Estudos com IA | Kelven</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #fff7f0; }
-    main { max-width: 640px; margin: 0 auto; padding: 24px; }
-    textarea { width: 100%; box-sizing: border-box; padding: 12px; font-size: 16px; }
-    button { margin-top: 12px; padding: 12px 20px; font-size: 16px; border: 0;
-             border-radius: 8px; background: #ee6a33; color: white; }
-    button:disabled { background: #bbb; }
-    .etiqueta { display: inline-block; background: #fce3d3; border-radius: 12px;
-                padding: 4px 10px; margin: 4px 4px 0 0; }
-    .aviso { font-size: 13px; color: #777; }
-  </style>
-</head>
-<body>
-  <main>
-    <h1>Resumidor de estudos</h1>
-    <p>Cole um texto e a IA devolve um resumo e as palavras-chave.</p>
-    <textarea id="texto" rows="8" maxlength="2000"
-              placeholder="Cole aqui um texto de até 2.000 caracteres"></textarea>
-    <button id="botao">Resumir com IA</button>
-    <div id="resultado"></div>
-    <p class="aviso">Respostas geradas por inteligência artificial podem conter erros.
-      Não envie dados pessoais.</p>
-  </main>
-  <script>
-    const botao = document.getElementById('botao');
-    const resultado = document.getElementById('resultado');
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --surface-subtle: #f4f4f5;
+      --border: #e4e4e7;
+      --border-hover: #d4d4d8;
+      --text: #09090b;
+      --text-muted: #71717a;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      --danger: #ef4444;
+      --danger-light: #fef2f2;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+      --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
-    function mostrar(dados) {
-      resultado.replaceChildren();                // limpa o resultado anterior
-      const resumo = document.createElement('p');
-      resumo.textContent = dados.resumo;          // mostra como texto, com segurança
-      resultado.appendChild(resumo);
-      for (const palavra of dados.palavras_chave || []) {
-        const etiqueta = document.createElement('span');
-        etiqueta.className = 'etiqueta';
-        etiqueta.textContent = palavra;
-        resultado.appendChild(etiqueta);
+    [data-theme="dark"] {
+      --bg: #09090b;
+      --surface: #121215;
+      --surface-subtle: #18181b;
+      --border: #27272a;
+      --border-hover: #3f3f46;
+      --text: #fafafa;
+      --text-muted: #a1a1aa;
+      --primary: #3b82f6;
+      --primary-hover: #60a5fa;
+      --primary-light: rgba(59, 130, 246, 0.12);
+      --success: #34d399;
+      --success-light: rgba(52, 211, 153, 0.12);
+      --danger: #f87171;
+      --danger-light: rgba(239, 68, 68, 0.12);
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 12px 30px -10px rgba(0, 0, 0, 0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Navbar */
+    .nav {
+      max-width: 820px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 20px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+
+    .back-link:hover {
+      color: var(--text);
+      border-color: var(--border-hover);
+      transform: translateX(-2px);
+    }
+
+    .theme-toggle {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      transition: var(--transition);
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-1px);
+    }
+
+    /* Main Container */
+    main {
+      max-width: 820px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 20px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Hero / Header */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tool-badge {
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .hero-title {
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 600px;
+    }
+
+    /* Examples Chips */
+    .examples-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .examples-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .example-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 12.5px;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+
+    .example-chip:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-light);
+      transform: translateY(-1px);
+    }
+
+    /* Input Box Card */
+    .input-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: var(--transition);
+    }
+
+    .input-card:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 170px;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.6;
+      resize: vertical;
+    }
+
+    textarea::placeholder {
+      color: var(--text-muted);
+      opacity: 0.7;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .counter-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .char-counter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .btn-clear {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-decoration: underline;
+    }
+
+    .btn-clear:hover {
+      color: var(--text);
+    }
+
+    .action-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .shortcut-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: none;
+    }
+
+    @media (min-width: 640px) {
+      .shortcut-hint {
+        display: inline-block;
       }
     }
 
-    botao.addEventListener('click', async () => {
-      const texto = document.getElementById('texto').value.trim();
+    button#botao {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--primary);
+      color: white;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    }
+
+    button#botao:hover:not(:disabled) {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    button#botao:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Result Area */
+    #resultado {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .result-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-copy {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+
+    .btn-copy:hover {
+      color: var(--text);
+      border-color: var(--border-hover);
+    }
+
+    .summary-text {
+      font-size: 15.5px;
+      line-height: 1.7;
+      color: var(--text);
+    }
+
+    .keywords-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .keywords-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .keywords-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .etiqueta {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 999px;
+      padding: 4px 12px;
+    }
+
+    .etiqueta::before {
+      content: '#';
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* Loading and Status boxes */
+    .status-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .status-error {
+      background: var(--danger-light);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: var(--danger);
+      font-weight: 500;
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Disclaimer */
+    .aviso {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.5;
+      padding: 0 4px;
+    }
+
+    .aviso svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <a href="/" class="back-link">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Voltar ao Portfólio
+    </a>
+    <button class="theme-toggle" id="theme-btn" aria-label="Alternar tema" title="Alternar tema claro/escuro">
+      <svg id="theme-icon-sun" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="5"></circle>
+        <path stroke-linecap="round" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+      </svg>
+      <svg id="theme-icon-moon" style="display:none;" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+      </svg>
+    </button>
+  </nav>
+
+  <!-- Main Container -->
+  <main>
+    <!-- Header -->
+    <header class="hero">
+      <div class="tool-badge">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        Mistral AI • Serverless
+      </div>
+      <h1 class="hero-title">Resumidor de Estudos</h1>
+      <p class="hero-subtitle">
+        Cole um texto acadêmico, artigo ou anotação para sintetizar as ideias principais e extrair termos-chave essenciais.
+      </p>
+    </header>
+
+    <!-- Quick Example Prompts -->
+    <div class="examples-wrap">
+      <span class="examples-title">Exemplos rápidos para testar:</span>
+      <div class="chips-container">
+        <button type="button" class="example-chip" data-example="computacao">
+          ☁️ O que é Computação em Nuvem?
+        </button>
+        <button type="button" class="example-chip" data-example="ia">
+          🤖 Modelos de Linguagem (LLMs)
+        </button>
+        <button type="button" class="example-chip" data-example="conecta">
+          🎓 Projeto Conecta Jovem
+        </button>
+      </div>
+    </div>
+
+    <!-- Input Card -->
+    <div class="input-card">
+      <textarea id="texto" rows="8" maxlength="2000"
+                placeholder="Cole aqui seu texto de estudo (até 2.000 caracteres)..."></textarea>
+      
+      <div class="card-footer">
+        <div class="counter-wrap">
+          <span class="char-counter" id="contador">0 / 2.000</span>
+          <button type="button" class="btn-clear" id="btn-limpar" style="display: none;">Limpar</button>
+        </div>
+
+        <div class="action-group">
+          <span class="shortcut-hint">Ctrl + Enter</span>
+          <button id="botao">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            Resumir com IA
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Area -->
+    <div id="resultado"></div>
+
+    <!-- Privacy Disclaimer -->
+    <p class="aviso">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+      </svg>
+      <span>
+        Respostas geradas por inteligência artificial podem conter imprecisões. Por segurança, não envie dados pessoais ou confidenciais.
+      </span>
+    </p>
+  </main>
+
+  <script>
+    // Theme toggle
+    const themeBtn = document.getElementById('theme-btn');
+    const sunIcon = document.getElementById('theme-icon-sun');
+    const moonIcon = document.getElementById('theme-icon-moon');
+
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+      }
+    }
+
+    const savedTheme = localStorage.getItem('theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    applyTheme(savedTheme);
+
+    themeBtn.addEventListener('click', () => {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const newTheme = isDark ? 'light' : 'dark';
+      localStorage.setItem('theme', newTheme);
+      applyTheme(newTheme);
+    });
+
+    // Character counter & clear button
+    const textarea = document.getElementById('texto');
+    const contador = document.getElementById('contador');
+    const btnLimpar = document.getElementById('btn-limpar');
+    const botao = document.getElementById('botao');
+    const resultado = document.getElementById('resultado');
+
+    function updateCounter() {
+      const length = textarea.value.length;
+      contador.textContent = `${length.toLocaleString('pt-BR')} / 2.000`;
+      btnLimpar.style.display = length > 0 ? 'inline' : 'none';
+      if (length > 1800) {
+        contador.style.color = 'var(--danger)';
+      } else {
+        contador.style.color = 'var(--text-muted)';
+      }
+    }
+
+    textarea.addEventListener('input', updateCounter);
+
+    btnLimpar.addEventListener('click', () => {
+      textarea.value = '';
+      updateCounter();
+      textarea.focus();
+    });
+
+    // Example snippets
+    const EXEMPLOS = {
+      computacao: 'Computação em nuvem é a entrega de serviços de computação — incluindo servidores, armazenamento, bancos de dados, redes, software e análise — pela Internet, a fim de oferecer inovações mais rápidas, recursos flexíveis e economia de escala. Em vez de comprar e manter servidores físicos, as empresas contratam infraestrutura sob demanda de provedores como AWS, Google Cloud e Cloudflare.',
+      ia: 'Modelos de Linguagem de Grande Escala (LLMs) são redes neurais profundas treinadas em vastos volumes de texto para compreender e gerar linguagem natural. Eles utilizam mecanismos de atenção (Transformers) para ponderar o contexto de palavras em sequências longas, permitindo tarefas de tradução, síntese de documentos, geração de código e diálogo intuitivo com humanos.',
+      conecta: 'O Conecta Jovem é uma iniciativa educacional que capacita estudantes em tecnologia, programação e computação em nuvem em Cuiabá. O projeto visa democratizar o acesso às profissões do futuro, promovendo o desenvolvimento de competências digitais, desenvolvimento web e habilidades práticas com inteligência artificial para o mercado de trabalho.'
+    };
+
+    document.querySelectorAll('.example-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const key = chip.getAttribute('data-example');
+        if (EXEMPLOS[key]) {
+          textarea.value = EXEMPLOS[key];
+          updateCounter();
+          textarea.focus();
+        }
+      });
+    });
+
+    // Render summary result
+    function mostrar(dados) {
+      resultado.replaceChildren();
+
+      const card = document.createElement('div');
+      card.className = 'result-card';
+
+      // Header with copy button
+      const header = document.createElement('div');
+      header.className = 'result-header';
+
+      const title = document.createElement('span');
+      title.className = 'result-title';
+      title.innerHTML = `
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        Resumo Gerado
+      `;
+      header.appendChild(title);
+
+      const btnCopy = document.createElement('button');
+      btnCopy.type = 'button';
+      btnCopy.className = 'btn-copy';
+      btnCopy.innerHTML = `
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+          <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+        </svg>
+        Copiar
+      `;
+      btnCopy.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(dados.resumo);
+          btnCopy.innerHTML = `
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Copiado!
+          `;
+          setTimeout(() => {
+            btnCopy.innerHTML = `
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+              </svg>
+              Copiar
+            `;
+          }, 2000);
+        } catch {
+          // fallback
+        }
+      });
+      header.appendChild(btnCopy);
+      card.appendChild(header);
+
+      // Resumo text
+      const resumo = document.createElement('p');
+      resumo.className = 'summary-text';
+      resumo.textContent = dados.resumo;
+      card.appendChild(resumo);
+
+      // Palavras-chave
+      if (dados.palavras_chave && dados.palavras_chave.length > 0) {
+        const keywordsSection = document.createElement('div');
+        keywordsSection.className = 'keywords-section';
+
+        const keywordsTitle = document.createElement('span');
+        keywordsTitle.className = 'keywords-title';
+        keywordsTitle.textContent = 'Palavras-chave extraídas';
+        keywordsSection.appendChild(keywordsTitle);
+
+        const keywordsList = document.createElement('div');
+        keywordsList.className = 'keywords-list';
+        for (const palavra of dados.palavras_chave) {
+          const etiqueta = document.createElement('span');
+          etiqueta.className = 'etiqueta';
+          etiqueta.textContent = palavra;
+          keywordsList.appendChild(etiqueta);
+        }
+        keywordsSection.appendChild(keywordsList);
+        card.appendChild(keywordsSection);
+      }
+
+      resultado.appendChild(card);
+    }
+
+    function mostrarErro(mensagem) {
+      resultado.replaceChildren();
+      const erroBox = document.createElement('div');
+      erroBox.className = 'status-box status-error';
+      erroBox.innerHTML = `
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span>${mensagem}</span>
+      `;
+      resultado.appendChild(erroBox);
+    }
+
+    function mostrarCarregando() {
+      resultado.replaceChildren();
+      const loadBox = document.createElement('div');
+      loadBox.className = 'status-box';
+      loadBox.innerHTML = `
+        <div class="spinner"></div>
+        <span>A IA está analisando e sintetizando o texto...</span>
+      `;
+      resultado.appendChild(loadBox);
+    }
+
+    async function executarResumo() {
+      const texto = textarea.value.trim();
       if (!texto) {
-        resultado.textContent = 'Digite ou cole um texto primeiro.';
+        mostrarErro('Por favor, digite ou selecione um texto antes de resumir.');
+        textarea.focus();
         return;
       }
-      botao.disabled = true;                      // evita cliques repetidos
-      resultado.textContent = 'Pensando...';
+
+      botao.disabled = true;
+      const textoOriginalBotao = botao.innerHTML;
+      botao.innerHTML = `
+        <div class="spinner" style="width:14px;height:14px;border-width:2px;border-top-color:#fff;"></div>
+        Processando...
+      `;
+      mostrarCarregando();
+
       try {
         const resposta = await fetch('/api/ia', {
           method: 'POST',
@@ -62,14 +788,27 @@
         if (resposta.ok) {
           mostrar(dados);
         } else {
-          resultado.textContent = dados.erro;
+          mostrarErro(dados.erro || 'Não foi possível gerar o resumo. Tente novamente.');
         }
       } catch (erro) {
-        resultado.textContent = 'Sem conexão com o servidor. Tente de novo.';
+        mostrarErro('Sem conexão com o servidor da nuvem. Verifique sua rede e tente novamente.');
       } finally {
         botao.disabled = false;
+        botao.innerHTML = textoOriginalBotao;
+      }
+    }
+
+    botao.addEventListener('click', executarResumo);
+
+    // Shortcut: Ctrl + Enter / Cmd + Enter
+    textarea.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        executarResumo();
       }
     });
+
+    updateCounter();
   </script>
 </body>
 </html>
